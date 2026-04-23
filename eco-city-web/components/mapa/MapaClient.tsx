@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   ApiError,
   fetchCollectionPoints,
@@ -11,9 +12,20 @@ import {
   type Paginated,
 } from "@/lib/api";
 import { CategoryFilters } from "./CategoryFilters";
-import { MapPlaceholder } from "./MapPlaceholder";
 import { FiltersSidebar } from "./FiltersSidebar";
 import { PointsList } from "./PointsList";
+
+const MapView = dynamic(
+  () => import("./MapView").then((m) => m.MapView),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-[420px] items-center justify-center rounded-xl border border-line bg-surface-alt text-[13px] text-ink-soft">
+        Carregando mapa…
+      </div>
+    ),
+  },
+);
 
 export type FiltersState = {
   type: CollectionPointType | null;
@@ -91,7 +103,7 @@ export function MapaClient() {
       <CategoryFilters activeType={filters.type} onChange={setType} />
 
       <div className="mt-6">
-        <MapPlaceholder />
+        <MapView points={points?.data ?? []} />
       </div>
 
       <div className="mt-10 grid gap-6 lg:grid-cols-12">
