@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\CepController;
+use App\Http\Controllers\Api\V1\CollectionPointController;
 use App\Http\Controllers\Api\V1\NeighborhoodController;
 use App\Http\Controllers\Api\V1\ScheduleController;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ Route::prefix('v1')->group(function () {
         Route::get('neighborhoods/{neighborhood}', [NeighborhoodController::class, 'show']);
         Route::get('neighborhoods/{neighborhood}/schedule', [ScheduleController::class, 'byNeighborhood']);
         Route::get('schedule', [ScheduleController::class, 'monthly']);
+        Route::get('collection-points', [CollectionPointController::class, 'index']);
     });
 
     Route::middleware('throttle:30,1')->group(function () {

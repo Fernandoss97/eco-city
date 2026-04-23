@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             CornelioProcopioSeeder::class,
             NeighborhoodCepPrefixSeeder::class,
             CollectionScheduleSeeder::class,
+            CollectionPointSeeder::class,
         ]);
     }
 }
