@@ -3,8 +3,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { HeroBand } from "@/components/layout/HeroBand";
 import { Container } from "@/components/ui/Container";
-import { ScheduleFinder } from "@/components/coletas/ScheduleFinder";
-import { MonthlyCalendar } from "@/components/coletas/MonthlyCalendar";
+import { ColetasClient } from "@/components/coletas/ColetasClient";
 
 export const metadata: Metadata = {
   title: "Calendário de Coleta",
@@ -26,10 +25,7 @@ export default function ColetasPage() {
             <h2 className="mb-5 text-[18px] font-semibold text-ink">
               Informações de Coleta
             </h2>
-            <ScheduleFinder />
-            <div className="mt-8">
-              <MonthlyCalendar />
-            </div>
+            <ColetasClient />
           </section>
         </Container>
       </main>
