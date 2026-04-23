@@ -116,3 +116,59 @@ export function fetchNeighborhoodSchedule(
 }> {
   return request(`/neighborhoods/${id}/schedule`);
 }
+
+export type CollectionPointType = "reciclagem" | "especial";
+
+export type CollectionPoint = {
+  id: number;
+  type: CollectionPointType;
+  name: string;
+  address: string;
+  lat: number;
+  lng: number;
+  accepted_materials: string[];
+  hours: Record<string, string> | null;
+  description: string | null;
+  neighborhood: {
+    id: number;
+    name: string;
+    city: string;
+  } | null;
+};
+
+export type Paginated<T> = {
+  data: T[];
+  meta: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+  };
+};
+
+export type CollectionPointFilters = {
+  type?: CollectionPointType;
+  neighborhood_id?: number;
+  materials?: string[];
+  page?: number;
+  per_page?: number;
+};
+
+export function fetchCollectionPoints(
+  filters: CollectionPointFilters = {},
+): Promise<Paginated<CollectionPoint>> {
+  const params = new URLSearchParams();
+  if (filters.type) params.set("type", filters.type);
+  if (filters.neighborhood_id != null)
+    params.set("neighborhood_id", String(filters.neighborhood_id));
+  if (filters.materials && filters.materials.length > 0)
+    params.set("materials", filters.materials.join(","));
+  if (filters.page) params.set("page", String(filters.page));
+  if (filters.per_page) params.set("per_page", String(filters.per_page));
+  const qs = params.toString();
+  return request(`/collection-points${qs ? `?${qs}` : ""}`);
+}
+
+export function fetchNeighborhoods(): Promise<Paginated<Neighborhood>> {
+  return request("/neighborhoods?per_page=100");
+}

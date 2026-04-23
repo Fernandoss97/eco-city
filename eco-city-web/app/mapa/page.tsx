@@ -3,10 +3,7 @@ import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { HeroBand } from "@/components/layout/HeroBand";
 import { Container } from "@/components/ui/Container";
-import { CategoryFilters } from "@/components/mapa/CategoryFilters";
-import { MapPlaceholder } from "@/components/mapa/MapPlaceholder";
-import { FiltersSidebar } from "@/components/mapa/FiltersSidebar";
-import { PointsList } from "@/components/mapa/PointsList";
+import { MapaClient } from "@/components/mapa/MapaClient";
 
 export const metadata: Metadata = {
   title: "Mapa Interativo",
@@ -28,21 +25,7 @@ export default function MapaPage() {
             <h2 className="mb-5 text-[18px] font-semibold text-ink">
               Mapa Interativo
             </h2>
-
-            <CategoryFilters />
-
-            <div className="mt-6">
-              <MapPlaceholder />
-            </div>
-
-            <div className="mt-10 grid gap-6 lg:grid-cols-12">
-              <aside className="lg:col-span-3">
-                <FiltersSidebar />
-              </aside>
-              <div className="lg:col-span-9">
-                <PointsList />
-              </div>
-            </div>
+            <MapaClient />
           </section>
         </Container>
       </main>

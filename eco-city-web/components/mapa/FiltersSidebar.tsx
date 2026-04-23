@@ -1,23 +1,34 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
+import type { Neighborhood } from "@/lib/api";
+import { MATERIAL_OPTIONS } from "./materials";
 
-const materials = [
-  "Papel e papelão",
-  "Vidro",
-  "Plástico",
-  "Metal",
-  "Eletrônicos",
-  "Baterias",
-  "Têxteis",
-];
+type Props = {
+  neighborhoods: Neighborhood[];
+  initial: { materials: string[]; neighborhoodId: number | null };
+  onApply: (next: { materials: string[]; neighborhoodId: number | null }) => void;
+};
 
-const hours = [
-  { id: "agora", label: "Aberto Agora" },
-  { id: "fds", label: "Fim de semana" },
-  { id: "h24", label: "Aberto 24/7" },
-];
+export function FiltersSidebar({ neighborhoods, initial, onApply }: Props) {
+  const [materials, setMaterials] = useState<string[]>(initial.materials);
+  const [neighborhoodId, setNeighborhoodId] = useState<number | null>(
+    initial.neighborhoodId,
+  );
 
-export function FiltersSidebar() {
+  useEffect(() => {
+    setMaterials(initial.materials);
+    setNeighborhoodId(initial.neighborhoodId);
+  }, [initial.materials, initial.neighborhoodId]);
+
+  const toggleMaterial = (id: string) => {
+    setMaterials((prev) =>
+      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id],
+    );
+  };
+
   return (
     <Card className="p-5">
       <fieldset>
@@ -25,18 +36,20 @@ export function FiltersSidebar() {
           Filtrar por material
         </legend>
         <ul className="mt-3 space-y-2">
-          {materials.map((m) => (
-            <li key={m} className="flex items-center gap-2">
+          {MATERIAL_OPTIONS.map((m) => (
+            <li key={m.id} className="flex items-center gap-2">
               <input
-                id={`mat-${m}`}
+                id={`mat-${m.id}`}
                 type="checkbox"
+                checked={materials.includes(m.id)}
+                onChange={() => toggleMaterial(m.id)}
                 className="size-4 accent-brand-500"
               />
               <label
-                htmlFor={`mat-${m}`}
+                htmlFor={`mat-${m.id}`}
                 className="text-[13px] text-ink-soft"
               >
-                {m}
+                {m.label}
               </label>
             </li>
           ))}
@@ -44,42 +57,28 @@ export function FiltersSidebar() {
       </fieldset>
 
       <fieldset className="mt-6">
-        <legend className="text-[13px] font-semibold text-ink">
-          Distância
-        </legend>
-        <input
-          type="range"
-          min={0}
-          max={20}
-          defaultValue={5}
-          className="mt-3 w-full accent-brand-500"
-          aria-label="Distância em quilômetros"
-        />
-      </fieldset>
-
-      <fieldset className="mt-6">
-        <legend className="text-[13px] font-semibold text-ink">Horário</legend>
-        <ul className="mt-3 space-y-2">
-          {hours.map((h) => (
-            <li key={h.id} className="flex items-center gap-2">
-              <input
-                id={`hr-${h.id}`}
-                type="radio"
-                name="hr"
-                className="size-4 accent-brand-500"
-              />
-              <label
-                htmlFor={`hr-${h.id}`}
-                className="text-[13px] text-ink-soft"
-              >
-                {h.label}
-              </label>
-            </li>
+        <legend className="text-[13px] font-semibold text-ink">Bairro</legend>
+        <select
+          value={neighborhoodId ?? ""}
+          onChange={(e) =>
+            setNeighborhoodId(e.target.value ? Number(e.target.value) : null)
+          }
+          className="mt-3 h-9 w-full rounded-md border border-line bg-surface px-2 text-[13px] text-ink focus-visible:border-brand-500 focus-visible:outline-none"
+        >
+          <option value="">Todos os bairros</option>
+          {neighborhoods.map((n) => (
+            <option key={n.id} value={n.id}>
+              {n.name}
+            </option>
           ))}
-        </ul>
+        </select>
       </fieldset>
 
-      <Button variant="primary" className="mt-6 w-full">
+      <Button
+        variant="primary"
+        className="mt-6 w-full"
+        onClick={() => onApply({ materials, neighborhoodId })}
+      >
         Aplicar filtros
       </Button>
     </Card>
