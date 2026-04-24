@@ -1,6 +1,20 @@
 export const API_BASE =
   process.env.NEXT_PUBLIC_API_URL ?? "http://eco-city-api.test/api/v1";
 
+const SANCTUM_BASE = API_BASE.replace(/\/api\/v1$/, "");
+
+function getXsrfToken(): string | null {
+  if (typeof document === "undefined") return null;
+  const row = document.cookie
+    .split("; ")
+    .find((r) => r.startsWith("XSRF-TOKEN="));
+  return row ? decodeURIComponent(row.split("=")[1]) : null;
+}
+
+async function initCsrf(): Promise<void> {
+  await fetch(`${SANCTUM_BASE}/sanctum/csrf-cookie`, { credentials: "include" });
+}
+
 export type WasteType = "reciclavel" | "organico" | "rejeito" | "especial";
 
 export type Collection = {
@@ -65,12 +79,18 @@ export class ApiError extends Error {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const method = (init?.method ?? "GET").toUpperCase();
+  const isMutating = ["POST", "PUT", "PATCH", "DELETE"].includes(method);
+  const xsrfToken = isMutating ? getXsrfToken() : null;
+
   let response: Response;
   try {
     response = await fetch(`${API_BASE}${path}`, {
       ...init,
+      credentials: "include",
       headers: {
         Accept: "application/json",
+        ...(xsrfToken ? { "X-XSRF-TOKEN": xsrfToken } : {}),
         ...init?.headers,
       },
     });
@@ -189,4 +209,49 @@ export function submitContactMessage(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   });
+}
+
+export type AuthUser = {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+};
+
+export type LoginPayload = { email: string; password: string };
+
+export type RegisterPayload = {
+  name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+};
+
+export async function fetchMe(): Promise<AuthUser> {
+  const res = await request<{ data: AuthUser }>("/auth/me");
+  return res.data;
+}
+
+export async function apiLogin(payload: LoginPayload): Promise<AuthUser> {
+  await initCsrf();
+  const res = await request<{ data: AuthUser }>("/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return res.data;
+}
+
+export async function apiRegister(payload: RegisterPayload): Promise<AuthUser> {
+  await initCsrf();
+  const res = await request<{ data: AuthUser }>("/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return res.data;
+}
+
+export async function apiLogout(): Promise<void> {
+  await request("/auth/logout", { method: "POST" });
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
-import { LinkButton } from "@/components/ui/Button";
 import { Logo } from "@/components/brand/Logo";
+import { NavbarAuthSection } from "@/components/layout/NavbarAuthSection";
 
 const nav = [
   { label: "Home", href: "/" },
@@ -33,22 +33,11 @@ export function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/entrar"
-              className="text-[14px] text-ink-soft transition-colors hover:text-ink"
-            >
-              Login
-            </Link>
-            <LinkButton href="/cadastro" variant="primary" size="sm">
-              Cadastrar
-            </LinkButton>
+            <NavbarAuthSection />
           </nav>
 
-          {/* Mobile: apenas Cadastrar visível (nav completo fica para um menu hamburger futuro) */}
           <div className="md:hidden">
-            <LinkButton href="/cadastro" variant="primary" size="sm">
-              Cadastrar
-            </LinkButton>
+            <NavbarAuthSection />
           </div>
         </div>
       </Container>
