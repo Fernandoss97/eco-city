@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\ArticleController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CepController;
 use App\Http\Controllers\Api\V1\CollectionPointController;
@@ -22,6 +23,8 @@ Route::prefix('v1')->group(function () {
         Route::get('neighborhoods/{neighborhood}/schedule', [ScheduleController::class, 'byNeighborhood']);
         Route::get('schedule', [ScheduleController::class, 'monthly']);
         Route::get('collection-points', [CollectionPointController::class, 'index']);
+        Route::get('articles', [ArticleController::class, 'index'])->name('articles.index');
+        Route::get('articles/{slug}', [ArticleController::class, 'show'])->name('articles.show');
     });
 
     Route::middleware('throttle:30,1')->group(function () {
