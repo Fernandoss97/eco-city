@@ -1,7 +1,11 @@
+// In the browser, always use relative URLs so the Next.js rewrite proxy
+// serves both the SPA and API from the same origin — required for Sanctum
+// SPA auth (XSRF-TOKEN cookie must be readable via document.cookie).
+// In server-side contexts (RSC / Route Handlers) an absolute URL is needed.
 export const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://eco-city-api.test/api/v1";
-
-const SANCTUM_BASE = API_BASE.replace(/\/api\/v1$/, "");
+  typeof window !== "undefined"
+    ? "/api/v1"
+    : (process.env.NEXT_PUBLIC_API_URL ?? "http://eco-city-api.test/api/v1");
 
 function getXsrfToken(): string | null {
   if (typeof document === "undefined") return null;
@@ -12,7 +16,7 @@ function getXsrfToken(): string | null {
 }
 
 async function initCsrf(): Promise<void> {
-  await fetch(`${SANCTUM_BASE}/sanctum/csrf-cookie`, { credentials: "include" });
+  await fetch("/sanctum/csrf-cookie", { credentials: "include" });
 }
 
 export type WasteType = "reciclavel" | "organico" | "rejeito" | "especial";
