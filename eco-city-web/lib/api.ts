@@ -259,3 +259,35 @@ export async function apiRegister(payload: RegisterPayload): Promise<AuthUser> {
 export async function apiLogout(): Promise<void> {
   await request("/auth/logout", { method: "POST" });
 }
+
+export type Article = {
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string;
+  body_md?: string;
+  cover_path: string | null;
+  published_at: string;
+  tags: string[];
+};
+
+export type ArticleFilters = {
+  tag?: string;
+  page?: number;
+  per_page?: number;
+};
+
+export function fetchArticles(
+  filters: ArticleFilters = {},
+): Promise<Paginated<Article>> {
+  const params = new URLSearchParams();
+  if (filters.tag) params.set("tag", filters.tag);
+  if (filters.page) params.set("page", String(filters.page));
+  if (filters.per_page) params.set("per_page", String(filters.per_page));
+  const qs = params.toString();
+  return request(`/articles${qs ? `?${qs}` : ""}`);
+}
+
+export function fetchArticle(slug: string): Promise<{ data: Article }> {
+  return request(`/articles/${slug}`);
+}
