@@ -172,3 +172,21 @@ export function fetchCollectionPoints(
 export function fetchNeighborhoods(): Promise<Paginated<Neighborhood>> {
   return request("/neighborhoods?per_page=100");
 }
+
+export type ContactPayload = {
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  body: string;
+};
+
+export function submitContactMessage(
+  payload: ContactPayload,
+): Promise<{ data: { id: number; message: string } }> {
+  return request("/contact-messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+}

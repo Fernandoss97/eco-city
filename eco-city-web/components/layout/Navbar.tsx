@@ -8,6 +8,7 @@ const nav = [
   { label: "Mapa", href: "/mapa" },
   { label: "Calendário de Coleta", href: "/coletas" },
   { label: "Blog", href: "/blog" },
+  { label: "Contato", href: "/contato" },
 ] as const;
 
 export function Navbar() {
