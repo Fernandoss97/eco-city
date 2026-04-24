@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { GuestOnly } from "@/components/auth/GuestOnly";
 
 type Status =
   | { kind: "idle" }
@@ -45,7 +46,7 @@ export default function EntrarPage() {
   const submitting = status.kind === "submitting";
 
   return (
-    <>
+    <GuestOnly>
       <Navbar />
       <main className="flex-1">
         <HeroBand title="Entrar na conta" />
@@ -109,6 +110,6 @@ export default function EntrarPage() {
         </Container>
       </main>
       <Footer />
-    </>
+    </GuestOnly>
   );
 }

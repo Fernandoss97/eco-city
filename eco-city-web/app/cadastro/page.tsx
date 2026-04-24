@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
+import { GuestOnly } from "@/components/auth/GuestOnly";
 
 type Status =
   | { kind: "idle" }
@@ -64,7 +65,7 @@ export default function CadastroPage() {
   const submitting = status.kind === "submitting";
 
   return (
-    <>
+    <GuestOnly>
       <Navbar />
       <main className="flex-1">
         <HeroBand title="Criar conta" />
@@ -159,6 +160,6 @@ export default function CadastroPage() {
         </Container>
       </main>
       <Footer />
-    </>
+    </GuestOnly>
   );
 }
