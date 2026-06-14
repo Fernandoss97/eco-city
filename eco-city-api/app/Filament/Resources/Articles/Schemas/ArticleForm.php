@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Articles\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
@@ -48,10 +49,16 @@ class ArticleForm
                             ->label('Publicado em')
                             ->helperText('Deixe vazio para salvar como rascunho.')
                             ->nullable(),
-                        TextInput::make('cover_path')
-                            ->label('Caminho da capa')
-                            ->maxLength(500)
-                            ->placeholder('images/artigos/exemplo.jpg'),
+                        FileUpload::make('cover_path')
+                            ->label('Imagem de capa')
+                            ->image()
+                            ->disk('public')
+                            ->directory('articles')
+                            ->imageResizeMode('cover')
+                            ->imageCropAspectRatio('16:9')
+                            ->imageResizeTargetWidth('1200')
+                            ->imageResizeTargetHeight('675')
+                            ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp']),
                         TagsInput::make('tags')
                             ->label('Tags')
                             ->columnSpanFull(),
