@@ -23,12 +23,6 @@ const features: Feature[] = [
     href: "/mapa",
   },
   {
-    title: "Notificações",
-    desc: "Receba lembretes para os dias de coleta",
-    cta: "Definir lembretes",
-    href: "/cadastro",
-  },
-  {
     title: "Suporte",
     desc: "Ajuda com a gestão de resíduos",
     cta: "Fale conosco",
@@ -40,7 +34,7 @@ export function FeatureCards() {
   return (
     <section className="-mt-16">
       <Container size="xl">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-3">
           {features.map((f) => (
             <Card
               key={f.title}
@@ -49,7 +43,20 @@ export function FeatureCards() {
               <div
                 className="flex size-16 items-center justify-center rounded-full bg-brand-100"
                 aria-hidden="true"
-              />
+              >
+                <svg
+                  className="size-7 text-brand-600"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 8v8M8 12h8" />
+                </svg>
+              </div>
               <h3 className="mt-6 text-[16px] font-semibold text-ink">
                 {f.title}
               </h3>
