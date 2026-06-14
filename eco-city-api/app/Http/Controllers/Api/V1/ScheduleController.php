@@ -33,15 +33,21 @@ class ScheduleController extends Controller
 
     public function monthly(MonthlyScheduleRequest $request, NeighborhoodResolver $resolver, ScheduleExpander $expander): JsonResponse
     {
-        $result = $resolver->resolve($request->cep());
+        if ($request->neighborhoodId() !== null) {
+            $neighborhood = Neighborhood::find($request->neighborhoodId());
 
-        if ($result === null) {
-            return response()->json([
-                'message' => 'CEP fora da área de cobertura.',
-            ], 404);
+            if ($neighborhood === null) {
+                return response()->json(['message' => 'Bairro não encontrado.'], 404);
+            }
+        } else {
+            $result = $resolver->resolve((string) $request->cep());
+
+            if ($result === null) {
+                return response()->json(['message' => 'CEP fora da área de cobertura.'], 404);
+            }
+
+            $neighborhood = $result['neighborhood'];
         }
-
-        $neighborhood = $result['neighborhood'];
 
         return response()->json([
             'data' => [
@@ -49,7 +55,6 @@ class ScheduleController extends Controller
                     'id' => $neighborhood->id,
                     'city' => $neighborhood->city,
                     'name' => $neighborhood->name,
-                    'matched_prefix' => $result['matched_prefix'],
                 ],
                 'month' => $request->month(),
                 'days' => $expander->expandMonth($neighborhood, $request->month()),

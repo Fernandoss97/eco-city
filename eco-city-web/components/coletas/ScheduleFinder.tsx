@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import type { WasteType } from "@/lib/api";
+import type { Neighborhood, WasteType } from "@/lib/api";
 import type { FinderState } from "./ColetasClient";
 
 const WEEKDAY_LABEL = [
@@ -23,30 +22,49 @@ const dotColor: Record<WasteType, string> = {
   especial: "bg-waste-especial",
 };
 
+const dotIcon: Record<WasteType, React.ReactNode> = {
+  convencional: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="size-5">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6l-1 14H6L5 6" />
+      <path d="M10 11v6M14 11v6" />
+      <path d="M9 6V4h6v2" />
+    </svg>
+  ),
+  seletiva: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="size-5">
+      <path d="M7 16V4m0 0L3 8m4-4l4 4" />
+      <path d="M17 8v12m0 0l4-4m-4 4l-4-4" />
+    </svg>
+  ),
+  especial: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="size-5">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  ),
+};
+
 const wasteDescription: Record<WasteType, string> = {
   convencional: "Lixo doméstico geral e resíduos não recicláveis",
   seletiva: "Papel, papelão, plástico, metal e vidro",
   especial: "Eletroeletrônicos, pilhas, lâmpadas e itens volumosos",
 };
 
-function formatCep(cep: string): string {
-  return cep.length === 8 ? `${cep.slice(0, 5)}-${cep.slice(5)}` : cep;
-}
-
 type Props = {
   state: FinderState;
-  onSearch: (cep: string) => void;
+  neighborhoods: Neighborhood[];
+  onSearch: (neighborhoodId: number) => void;
 };
 
-export function ScheduleFinder({ state, onSearch }: Props) {
-  const [input, setInput] = useState("");
+export function ScheduleFinder({ state, neighborhoods, onSearch }: Props) {
+  const [selected, setSelected] = useState<string>("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch(input);
+    if (selected) onSearch(Number(selected));
   };
-
-  const isInvalid = state.kind === "error";
 
   return (
     <Card className="p-7">
@@ -56,29 +74,34 @@ export function ScheduleFinder({ state, onSearch }: Props) {
 
       <form onSubmit={handleSubmit}>
         <label
-          htmlFor="cep"
-          className="mt-5 block text-[13px] font-medium text-[#D97706]"
+          htmlFor="neighborhood"
+          className="mt-5 block text-[13px] font-medium text-ink-soft"
         >
-          Digite seu CEP
+          Selecione seu bairro
         </label>
         <div className="mt-2 flex gap-3">
-          <Input
-            id="cep"
-            name="cep"
-            placeholder="86300-000"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            invalid={isInvalid}
-            inputMode="numeric"
-            autoComplete="postal-code"
-            maxLength={9}
-          />
+          <select
+            id="neighborhood"
+            value={selected}
+            onChange={(e) => setSelected(e.target.value)}
+            className="flex-1 rounded-md border border-line bg-surface px-3 py-2 text-[14px] text-ink outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-200 disabled:opacity-50"
+            disabled={neighborhoods.length === 0}
+          >
+            <option value="">
+              {neighborhoods.length === 0 ? "Carregando bairros…" : "Selecione um bairro"}
+            </option>
+            {neighborhoods.map((n) => (
+              <option key={n.id} value={n.id}>
+                {n.name}
+              </option>
+            ))}
+          </select>
           <Button
             type="submit"
             variant="primary"
             size="md"
             className="shrink-0"
-            disabled={state.kind === "loading"}
+            disabled={!selected || state.kind === "loading"}
           >
             {state.kind === "loading" ? "Buscando…" : "Pesquisar"}
           </Button>
@@ -94,12 +117,9 @@ export function ScheduleFinder({ state, onSearch }: Props) {
       {state.kind === "ready" && (
         <>
           <p className="mt-5 text-[13px] text-ink-soft">
-            Cronograma de Coleta para:{" "}
-            <span className="text-ink">
-              {state.cepLookup.logradouro || "—"}
-              {state.cepLookup.neighborhood?.name &&
-                ` · ${state.cepLookup.neighborhood.name}`}{" "}
-              ({formatCep(state.cepLookup.cep)})
+            Cronograma de coleta para:{" "}
+            <span className="font-medium text-ink">
+              {state.neighborhood.name} — {state.neighborhood.city}
             </span>
           </p>
 
@@ -116,8 +136,10 @@ export function ScheduleFinder({ state, onSearch }: Props) {
                 >
                   <span
                     aria-hidden="true"
-                    className={`size-10 shrink-0 rounded-full ${dotColor[item.waste_type]}`}
-                  />
+                    className={`flex size-10 shrink-0 items-center justify-center rounded-full ${dotColor[item.waste_type]}`}
+                  >
+                    {dotIcon[item.waste_type]}
+                  </span>
                   <div className="min-w-0 flex-1">
                     <div className="text-[14px] font-semibold text-ink">
                       {item.waste_type_label}
@@ -139,10 +161,7 @@ export function ScheduleFinder({ state, onSearch }: Props) {
             </ul>
           )}
 
-          <div className="mt-6 grid gap-3 md:grid-cols-3">
-            <Button variant="primary" disabled>
-              Definir lembretes
-            </Button>
+          <div className="mt-6 grid gap-3 md:grid-cols-2">
             <Button variant="secondary" disabled>
               Adicionar ao calendário
             </Button>
@@ -155,7 +174,7 @@ export function ScheduleFinder({ state, onSearch }: Props) {
 
       {state.kind === "idle" && (
         <p className="mt-5 text-[13px] text-ink-soft">
-          Digite o CEP para visualizar o cronograma de coleta da sua região.
+          Selecione um bairro para visualizar o cronograma de coleta da sua região.
         </p>
       )}
     </Card>

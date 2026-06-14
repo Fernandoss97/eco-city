@@ -3,11 +3,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ApiError,
-  fetchCep,
   fetchMonthlySchedule,
-  type CepLookup,
-  type Collection,
+  fetchNeighborhoods,
   type DayCollections,
+  type Neighborhood,
   type WasteType,
 } from "@/lib/api";
 import { ScheduleFinder } from "./ScheduleFinder";
@@ -23,12 +22,11 @@ type WeeklyEntry = {
 
 export type FinderState =
   | { kind: "idle" }
-  | { kind: "loading"; cep: string }
-  | { kind: "error"; cep: string; message: string }
+  | { kind: "loading" }
+  | { kind: "error"; message: string }
   | {
       kind: "ready";
-      cep: string;
-      cepLookup: CepLookup;
+      neighborhood: { id: number; name: string; city: string };
       weekly: WeeklyEntry[];
     };
 
@@ -72,53 +70,39 @@ const WASTE_ORDER: Record<WasteType, number> = {
   especial: 2,
 };
 
-function normalizeCep(input: string): string {
-  return input.replace(/\D/g, "");
-}
-
 export function ColetasClient() {
   const [month, setMonth] = useState<string>(() => currentMonth());
   const [days, setDays] = useState<DayCollections[]>([]);
   const [calendarLoading, setCalendarLoading] = useState(false);
   const [finder, setFinder] = useState<FinderState>({ kind: "idle" });
+  const [neighborhoods, setNeighborhoods] = useState<Neighborhood[]>([]);
+
+  useEffect(() => {
+    fetchNeighborhoods()
+      .then((res) => setNeighborhoods(res.data))
+      .catch(() => {});
+  }, []);
 
   const search = useCallback(
-    async (rawCep: string) => {
-      const cep = normalizeCep(rawCep);
-      if (cep.length !== 8) {
-        setFinder({
-          kind: "error",
-          cep: rawCep,
-          message: "Digite um CEP com 8 dígitos.",
-        });
-        return;
-      }
-
-      setFinder({ kind: "loading", cep });
+    async (neighborhoodId: number) => {
+      setFinder({ kind: "loading" });
       setCalendarLoading(true);
 
       try {
-        const [cepResponse, monthlyResponse] = await Promise.all([
-          fetchCep(cep),
-          fetchMonthlySchedule(cep, month),
-        ]);
-
-        const weekly = uniqueWeekly(monthlyResponse.data.days);
-        setDays(monthlyResponse.data.days);
+        const response = await fetchMonthlySchedule(neighborhoodId, month);
+        const weekly = uniqueWeekly(response.data.days);
+        setDays(response.data.days);
         setFinder({
           kind: "ready",
-          cep,
-          cepLookup: cepResponse.data,
+          neighborhood: response.data.neighborhood,
           weekly,
         });
       } catch (err) {
         const message =
           err instanceof ApiError
-            ? err.status === 404
-              ? "CEP fora da área de cobertura ou inexistente."
-              : err.message
-            : "Erro inesperado ao buscar o CEP.";
-        setFinder({ kind: "error", cep, message });
+            ? err.message
+            : "Erro inesperado ao buscar o cronograma.";
+        setFinder({ kind: "error", message });
         setDays([]);
       } finally {
         setCalendarLoading(false);
@@ -127,12 +111,11 @@ export function ColetasClient() {
     [month],
   );
 
-  // Refetch only the calendar when month changes (keep CEP info).
   useEffect(() => {
     if (finder.kind !== "ready") return;
     let cancelled = false;
     setCalendarLoading(true);
-    fetchMonthlySchedule(finder.cep, month)
+    fetchMonthlySchedule(finder.neighborhood.id, month)
       .then((response) => {
         if (cancelled) return;
         setDays(response.data.days);
@@ -150,15 +133,9 @@ export function ColetasClient() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [month]);
 
-  const goToPrevMonth = useCallback(() => {
-    setMonth((m) => shiftMonth(m, -1));
-  }, []);
-  const goToNextMonth = useCallback(() => {
-    setMonth((m) => shiftMonth(m, 1));
-  }, []);
-  const goToToday = useCallback(() => {
-    setMonth(currentMonth());
-  }, []);
+  const goToPrevMonth = useCallback(() => setMonth((m) => shiftMonth(m, -1)), []);
+  const goToNextMonth = useCallback(() => setMonth((m) => shiftMonth(m, 1)), []);
+  const goToToday = useCallback(() => setMonth(currentMonth()), []);
 
   const monthLabel = useMemo(() => {
     const [yy, mm] = month.split("-").map(Number);
@@ -171,7 +148,11 @@ export function ColetasClient() {
 
   return (
     <>
-      <ScheduleFinder state={finder} onSearch={search} />
+      <ScheduleFinder
+        state={finder}
+        neighborhoods={neighborhoods}
+        onSearch={search}
+      />
       <div className="mt-8">
         <MonthlyCalendar
           month={month}

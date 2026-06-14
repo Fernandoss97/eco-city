@@ -67,7 +67,6 @@ export type MonthlySchedule = {
     id: number;
     city: string;
     name: string;
-    matched_prefix: string;
   };
   month: string;
   days: DayCollections[];
@@ -123,10 +122,10 @@ export function fetchCep(cep: string): Promise<{ data: CepLookup }> {
 }
 
 export function fetchMonthlySchedule(
-  cep: string,
+  neighborhoodId: number,
   month: string,
 ): Promise<{ data: MonthlySchedule }> {
-  const params = new URLSearchParams({ cep, month });
+  const params = new URLSearchParams({ neighborhood_id: String(neighborhoodId), month });
   return request(`/schedule?${params.toString()}`);
 }
 

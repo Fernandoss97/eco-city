@@ -131,7 +131,7 @@ export function MonthlyCalendar({
 
       {!loading && days.length === 0 && (
         <p className="mt-4 rounded-md border border-line bg-surface-alt p-4 text-center text-[13px] text-ink-soft">
-          Pesquise um CEP acima para ver as coletas do mês.
+          Selecione um bairro acima para ver as coletas do mês.
         </p>
       )}
 

@@ -17,14 +17,22 @@ class MonthlyScheduleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cep' => ['required', 'string', 'regex:/^\d{8}$/'],
-            'month' => ['required', 'string', 'regex:/^\d{4}-(0[1-9]|1[0-2])$/'],
+            'neighborhood_id' => ['nullable', 'required_without:cep', 'integer', 'exists:neighborhoods,id'],
+            'cep'             => ['nullable', 'required_without:neighborhood_id', 'string', 'regex:/^\d{8}$/'],
+            'month'           => ['required', 'string', 'regex:/^\d{4}-(0[1-9]|1[0-2])$/'],
         ];
     }
 
-    public function cep(): string
+    public function neighborhoodId(): ?int
     {
-        return (string) $this->validated('cep');
+        $val = $this->validated('neighborhood_id');
+        return $val !== null ? (int) $val : null;
+    }
+
+    public function cep(): ?string
+    {
+        $val = $this->validated('cep');
+        return $val !== null ? (string) $val : null;
     }
 
     public function month(): string

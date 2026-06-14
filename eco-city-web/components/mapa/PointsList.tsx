@@ -75,10 +75,23 @@ export function PointsList({
               <span
                 aria-hidden="true"
                 className={cn(
-                  "size-12 shrink-0 rounded-full",
+                  "flex size-12 shrink-0 items-center justify-center rounded-full",
                   p.type === "especial" ? "bg-[#FFEDD5]" : "bg-brand-100",
                 )}
-              />
+              >
+                {p.type === "especial" ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#EA580C" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="size-6">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="size-6">
+                    <path d="M7 16V4m0 0L3 8m4-4l4 4" />
+                    <path d="M17 8v12m0 0l4-4m-4 4l-4-4" />
+                  </svg>
+                )}
+              </span>
               <div className="min-w-0 flex-1">
                 <div className="text-[14px] font-semibold text-ink">{p.name}</div>
                 <div className="mt-0.5 text-[12px] text-ink-mute">{p.address}</div>
