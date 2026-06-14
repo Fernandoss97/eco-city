@@ -67,10 +67,9 @@ function uniqueWeekly(days: DayCollections[]): WeeklyEntry[] {
 }
 
 const WASTE_ORDER: Record<WasteType, number> = {
-  reciclavel: 0,
-  organico: 1,
-  rejeito: 2,
-  especial: 3,
+  convencional: 0,
+  seletiva: 1,
+  especial: 2,
 };
 
 function normalizeCep(input: string): string {

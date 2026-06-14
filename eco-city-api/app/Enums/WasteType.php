@@ -4,17 +4,15 @@ namespace App\Enums;
 
 enum WasteType: string
 {
-    case Reciclavel = 'reciclavel';
-    case Rejeito = 'rejeito';
-    case Organico = 'organico';
+    case Convencional = 'convencional';
+    case Seletiva = 'seletiva';
     case Especial = 'especial';
 
     public function label(): string
     {
         return match ($this) {
-            self::Reciclavel => 'Recicláveis',
-            self::Rejeito => 'Rejeito',
-            self::Organico => 'Orgânicos',
+            self::Convencional => 'Convencional',
+            self::Seletiva => 'Seletiva',
             self::Especial => 'Especial',
         };
     }

@@ -18,16 +18,14 @@ const WEEKDAY_LABEL = [
 ];
 
 const dotColor: Record<WasteType, string> = {
-  reciclavel: "bg-waste-recyclable",
-  organico: "bg-waste-organic",
-  rejeito: "bg-waste-rejeito",
-  especial: "bg-waste-special",
+  convencional: "bg-waste-convencional",
+  seletiva: "bg-waste-seletiva",
+  especial: "bg-waste-especial",
 };
 
 const wasteDescription: Record<WasteType, string> = {
-  reciclavel: "Papel, papelão, plástico, metal e vidro",
-  organico: "Restos de comida, resíduos de jardim e itens compostáveis",
-  rejeito: "Resíduos gerais que não podem ser reciclados ou compostados",
+  convencional: "Lixo doméstico geral e resíduos não recicláveis",
+  seletiva: "Papel, papelão, plástico, metal e vidro",
   especial: "Eletroeletrônicos, pilhas, lâmpadas e itens volumosos",
 };
 

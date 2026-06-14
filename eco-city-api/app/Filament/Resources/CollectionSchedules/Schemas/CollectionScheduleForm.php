@@ -22,7 +22,7 @@ class CollectionScheduleForm
                     ->preload()
                     ->required(),
                 Select::make('waste_type')
-                    ->label('Tipo de resíduo')
+                    ->label('Tipo de coleta')
                     ->options(WasteType::options())
                     ->required(),
                 Select::make('weekday')

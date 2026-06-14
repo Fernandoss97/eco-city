@@ -24,12 +24,10 @@
   --color-brand-800: #166534;
   --color-brand-900: #14532D;
 
-  /* Tipos de resíduo (calendário / bolinhas) */
-  --color-waste-recyclable: #22C55E;
-  --color-waste-organic: #A16A3C;
-  --color-waste-rejeito: #9CA3AF;
-  --color-waste-bulky: #EAB308;
-  --color-waste-special: #EA580C;
+  /* Tipos de coleta (calendário / bolinhas) */
+  --color-waste-convencional: #9CA3AF;
+  --color-waste-seletiva: #22C55E;
+  --color-waste-especial: #EA580C;
 
   /* Covers pastel (blog / artigos) */
   --color-pastel-rose: #F5C7C7;

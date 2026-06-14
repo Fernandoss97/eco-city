@@ -22,14 +22,13 @@ class CollectionSchedulesTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('waste_type')
-                    ->label('Tipo')
+                    ->label('Tipo de coleta')
                     ->badge()
                     ->formatStateUsing(fn (WasteType $state): string => $state->label())
                     ->color(fn (WasteType $state): string => match ($state) {
-                        WasteType::Reciclavel => 'success',
-                        WasteType::Organico => 'warning',
-                        WasteType::Rejeito => 'gray',
-                        WasteType::Especial => 'info',
+                        WasteType::Convencional => 'gray',
+                        WasteType::Seletiva => 'success',
+                        WasteType::Especial => 'warning',
                     }),
                 TextColumn::make('weekday')
                     ->label('Dia')

@@ -7,24 +7,21 @@ import type { DayCollections, WasteType } from "@/lib/api";
 const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
 const pillColor: Record<WasteType, string> = {
-  reciclavel: "bg-[#DCFCE7] text-[#166534]",
-  organico: "bg-[#F3E0CC] text-[#7C4A1E]",
-  rejeito: "bg-[#E5E7EB] text-[#4B5563]",
+  convencional: "bg-[#E5E7EB] text-[#4B5563]",
+  seletiva: "bg-[#DCFCE7] text-[#166534]",
   especial: "bg-[#FFEDD5] text-[#9A3412]",
 };
 
 const wasteShortLabel: Record<WasteType, string> = {
-  reciclavel: "Recicláveis",
-  organico: "Orgânicos",
-  rejeito: "Rejeitos",
-  especial: "Especiais",
+  convencional: "Convencional",
+  seletiva: "Seletiva",
+  especial: "Especial",
 };
 
 const legend: { label: string; type: WasteType }[] = [
-  { label: "Resíduos Recicláveis", type: "reciclavel" },
-  { label: "Resíduos Orgânicos", type: "organico" },
-  { label: "Rejeitos", type: "rejeito" },
-  { label: "Resíduos Especiais", type: "especial" },
+  { label: "Coleta Convencional", type: "convencional" },
+  { label: "Coleta Seletiva", type: "seletiva" },
+  { label: "Coleta Especial", type: "especial" },
 ];
 
 type Props = {

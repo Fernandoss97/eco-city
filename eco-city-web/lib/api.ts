@@ -19,7 +19,7 @@ async function initCsrf(): Promise<void> {
   await fetch("/sanctum/csrf-cookie", { credentials: "include" });
 }
 
-export type WasteType = "reciclavel" | "organico" | "rejeito" | "especial";
+export type WasteType = "convencional" | "seletiva" | "especial";
 
 export type Collection = {
   id: number;
