@@ -13,11 +13,11 @@ class CornelioProcopioSeeder extends Seeder
 
         $names = [
             'Centro',
-            'Jardim Panorama',
-            'Jardim Itamaraty',
-            'Vila Nova',
-            'Jardim Brasília',
-            'Vila Rica',
+            'Panorama',
+            'Bela Vista',
+            'Jardim Europa',
+            'Progresso',
+            'Morumbi',
         ];
 
         foreach ($names as $name) {

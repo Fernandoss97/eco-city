@@ -12,11 +12,11 @@ class NeighborhoodCepPrefixSeeder extends Seeder
     {
         $map = [
             'Centro' => ['86300', '86301'],
-            'Jardim Panorama' => ['86302'],
-            'Jardim Itamaraty' => ['86303'],
-            'Vila Nova' => ['86304'],
-            'Jardim Brasília' => ['86305'],
-            'Vila Rica' => ['86306'],
+            'Panorama' => ['86302'],
+            'Bela Vista' => ['86303'],
+            'Jardim Europa' => ['86304'],
+            'Progresso' => ['86305'],
+            'Morumbi' => ['86306'],
         ];
 
         foreach ($map as $name => $prefixes) {

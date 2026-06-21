@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             NeighborhoodCepPrefixSeeder::class,
             CollectionScheduleSeeder::class,
             CollectionPointSeeder::class,
+            ArticleSeeder::class,
         ]);
     }
 }
