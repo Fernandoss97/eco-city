@@ -11,46 +11,69 @@ class CollectionScheduleSeeder extends Seeder
 {
     public function run(): void
     {
-        // Distribuição padrão por bairro:
-        //   - Recicláveis: 1 dia/semana
-        //   - Rejeito (não-recicláveis): 2 dias/semana
-        //   - Orgânico: 1 dia/semana
+        // A coleta SELETIVA de cada bairro já é criada pela migration de reseed
+        // (reseed_neighborhoods_from_sanepar). Este seeder enriquece a agenda com
+        // os outros dois tipos da taxonomia atual — convencional e especial —
+        // sem colidir com a seletiva existente.
+        //
+        // Formato: [WasteType, weekday (0=Dom .. 6=Sáb), start, end]
         $plan = [
             'Centro' => [
-                [WasteType::Reciclavel, 2, '07:00', '11:00'],
-                [WasteType::Rejeito, 1, '18:00', '22:00'],
-                [WasteType::Rejeito, 4, '18:00', '22:00'],
-                [WasteType::Organico, 6, '08:00', '12:00'],
+                [WasteType::Convencional, 1, '18:00', '22:00'],
+                [WasteType::Convencional, 3, '18:00', '22:00'],
+                [WasteType::Convencional, 5, '18:00', '22:00'],
+                [WasteType::Especial, 6, '08:00', '12:00'],
             ],
-            'Jardim Panorama' => [
-                [WasteType::Reciclavel, 3, '07:00', '11:00'],
-                [WasteType::Rejeito, 2, '18:00', '22:00'],
-                [WasteType::Rejeito, 5, '18:00', '22:00'],
-                [WasteType::Organico, 6, '08:00', '12:00'],
+            'Panorama' => [
+                [WasteType::Convencional, 1, '18:00', '22:00'],
+                [WasteType::Convencional, 4, '18:00', '22:00'],
+                [WasteType::Especial, 6, '08:00', '12:00'],
             ],
-            'Jardim Itamaraty' => [
-                [WasteType::Reciclavel, 4, '07:00', '11:00'],
-                [WasteType::Rejeito, 1, '18:00', '22:00'],
-                [WasteType::Rejeito, 4, '18:00', '22:00'],
-                [WasteType::Organico, 6, '08:00', '12:00'],
+            'Bela Vista' => [
+                [WasteType::Convencional, 2, '18:00', '22:00'],
+                [WasteType::Convencional, 5, '18:00', '22:00'],
+                [WasteType::Especial, 6, '08:00', '12:00'],
             ],
-            'Vila Nova' => [
-                [WasteType::Reciclavel, 2, '07:00', '11:00'],
-                [WasteType::Rejeito, 3, '18:00', '22:00'],
-                [WasteType::Rejeito, 5, '18:00', '22:00'],
-                [WasteType::Organico, 6, '08:00', '12:00'],
+            'Jardim Europa' => [
+                [WasteType::Convencional, 1, '18:00', '22:00'],
+                [WasteType::Convencional, 4, '18:00', '22:00'],
             ],
-            'Jardim Brasília' => [
-                [WasteType::Reciclavel, 5, '07:00', '11:00'],
-                [WasteType::Rejeito, 2, '18:00', '22:00'],
-                [WasteType::Rejeito, 4, '18:00', '22:00'],
-                [WasteType::Organico, 6, '08:00', '12:00'],
+            'Progresso' => [
+                [WasteType::Convencional, 2, '18:00', '22:00'],
+                [WasteType::Convencional, 5, '18:00', '22:00'],
+                [WasteType::Especial, 3, '13:00', '17:00'],
             ],
-            'Vila Rica' => [
-                [WasteType::Reciclavel, 3, '07:00', '11:00'],
-                [WasteType::Rejeito, 1, '18:00', '22:00'],
-                [WasteType::Rejeito, 5, '18:00', '22:00'],
-                [WasteType::Organico, 6, '08:00', '12:00'],
+            'Morumbi' => [
+                [WasteType::Convencional, 3, '18:00', '22:00'],
+                [WasteType::Convencional, 6, '08:00', '12:00'],
+            ],
+            'Jardim Pioneiros' => [
+                [WasteType::Convencional, 1, '18:00', '22:00'],
+                [WasteType::Convencional, 4, '18:00', '22:00'],
+                [WasteType::Especial, 6, '08:00', '12:00'],
+            ],
+            'Independência' => [
+                [WasteType::Convencional, 2, '18:00', '22:00'],
+                [WasteType::Convencional, 5, '18:00', '22:00'],
+            ],
+            'Jardim Alvorada' => [
+                [WasteType::Convencional, 1, '18:00', '22:00'],
+                [WasteType::Convencional, 4, '18:00', '22:00'],
+                [WasteType::Especial, 3, '13:00', '17:00'],
+            ],
+            'Vila São Pedro' => [
+                [WasteType::Convencional, 2, '18:00', '22:00'],
+                [WasteType::Convencional, 5, '18:00', '22:00'],
+            ],
+            'Nova Esperança' => [
+                [WasteType::Convencional, 3, '18:00', '22:00'],
+                [WasteType::Convencional, 6, '08:00', '12:00'],
+                [WasteType::Especial, 1, '13:00', '17:00'],
+            ],
+            'Jardim Primavera' => [
+                [WasteType::Convencional, 2, '18:00', '22:00'],
+                [WasteType::Convencional, 5, '18:00', '22:00'],
+                [WasteType::Especial, 6, '08:00', '12:00'],
             ],
         ];
 
